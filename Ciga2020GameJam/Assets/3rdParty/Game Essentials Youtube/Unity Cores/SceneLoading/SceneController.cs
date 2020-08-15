@@ -19,6 +19,8 @@ namespace UnityCore.SceneManagement
         private bool m_SceneIsLoading;
 
         private string currentSceneName => SceneManager.GetActiveScene().name;
+        
+        
 
         #region Public Functions
 
@@ -75,6 +77,7 @@ namespace UnityCore.SceneManagement
             if (SceneController.Instance == this)
             {
                 SceneManager.sceneLoaded += OnSceneLoaded;   
+                DontDestroyOnLoad(this.gameObject);
             }
             else
             {

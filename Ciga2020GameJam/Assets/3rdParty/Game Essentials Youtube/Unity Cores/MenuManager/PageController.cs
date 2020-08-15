@@ -20,6 +20,7 @@ namespace UnityCore.MenuSystem
         {
             if (PageController.Instance == this)
             {
+                DontDestroyOnLoad(this.gameObject);
                 m_pageHashTable = new Hashtable();
                 RegisterAllPages();
         

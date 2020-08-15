@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace UnityCore.MenuSystem
 {
-    [CreateAssetMenu]
+    [CreateAssetMenu(fileName = "PageSlideAnimation", menuName = "UnityDev/MenuSystem/PageSlideAnimation")]
     public class PageSlideAnimation : PageAnimationType
     {
         public Vector2 anchoredPositionFrom = Vector2.zero;

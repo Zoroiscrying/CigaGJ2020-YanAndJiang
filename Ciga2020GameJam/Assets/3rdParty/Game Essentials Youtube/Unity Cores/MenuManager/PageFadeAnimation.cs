@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UnityCore.MenuSystem
 {
-    [CreateAssetMenu]
+    [CreateAssetMenu(fileName = "PageFadeAnimation", menuName = "UnityDev/MenuSystem/PageFadeAnimation")]
     public class PageFadeAnimation : PageAnimationType
     {
         public Ease easeType = Ease.InOutExpo;
