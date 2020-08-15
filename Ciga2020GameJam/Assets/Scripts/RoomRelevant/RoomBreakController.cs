@@ -81,15 +81,30 @@ public class RoomBreakController : MonoBehaviour
         }
     }
 
+    private void FindAndDestroySomeItems(int num)
+    {
+        
+    }
     private void FindAndDestroySomePackage(int num)
     {
         List<BasicPackage> packages = FindObjectsOfType<BasicPackage>().ToList();
-        for (int i = 0; i < num && packages.Count > 0; i++)
+        List<BasicItem> items = FindObjectsOfType<BasicItem>().ToList();
+        for (int i = 0; i < num; i++)
         {
-            int randomIndex = Random.Range(0, packages.Count);
-            var package = packages[randomIndex];
-            package.DestroySelf();
-            packages.RemoveAt(randomIndex);
+            if (packages.Count <= 0)
+            {
+                int randomIndex = Random.Range(0, items.Count);
+                var item = items[randomIndex];
+                Destroy(item.gameObject);
+                items.RemoveAt(randomIndex);
+            }
+            else
+            {
+                int randomIndex = Random.Range(0, packages.Count);
+                var package = packages[randomIndex];
+                package.DestroySelf();
+                packages.RemoveAt(randomIndex);   
+            }
         }
         
     }

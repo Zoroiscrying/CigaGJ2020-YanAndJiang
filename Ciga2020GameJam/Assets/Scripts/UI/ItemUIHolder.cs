@@ -28,6 +28,10 @@ public class ItemUIHolder : MonoBehaviour
                 UIMethods.GetScreenPosViaWorldPos(UIController.Instance.MainCanvas, BoundItem.transform.position) +
                 new Vector2(0, this._rectTransform.sizeDelta.y/2 + 40);
         }
+        else
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     private void RecalculateSize()
