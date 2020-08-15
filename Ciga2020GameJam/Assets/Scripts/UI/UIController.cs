@@ -9,6 +9,7 @@ public class UIController : Singleton<UIController>
     public PageTypeAtom LoadingPage;
     public PageTypeAtom GamePage;
     public PageTypeAtom MenuPage;
+    public PageTypeAtom DevPage;
     
     public Transform ItemUIHolderParent;
     public GameObject ItemUIHolderPrefab;
@@ -74,12 +75,31 @@ public class UIController : Singleton<UIController>
     {
         if (on)
         {
-            PageController.Instance.TurnPageOn(MenuPage);   
+            // PageController.Instance.TurnPageOn(MenuPage);
+            Timer.Register(0.49f , (() => PageController.Instance.TurnPageOn(MenuPage)));
         }
         else
         {
-            PageController.Instance.TurnPageOff(MenuPage);   
+            // PageController.Instance.TurnPageOff(MenuPage);
+            Timer.Register(0.49f , (() => PageController.Instance.TurnPageOff(MenuPage)));   
         }
+    }
+
+    public void TurnDeveloperPage(bool on)
+    {
+        if (on)
+        {
+            PageController.Instance.TurnPageOn(DevPage);   
+        }
+        else
+        {
+            PageController.Instance.TurnPageOff(DevPage);   
+        }
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
     }
 
     // Update is called once per frame

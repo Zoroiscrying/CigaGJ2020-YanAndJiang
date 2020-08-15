@@ -50,6 +50,7 @@ public class RoomBlock : InteractableObject,IPositionable
     {
         base.OnCanInteract();
         _material.SetColor("_BaseColor", Color.yellow);
+        _material.SetColor("_Tint", Color.yellow);
         EventKit.Broadcast<RoomBlock, bool>("Can Interact Room Block", this, true);
     }
 
@@ -57,6 +58,7 @@ public class RoomBlock : InteractableObject,IPositionable
     {
         base.OnQuitInteract();
         _material.SetColor("_BaseColor", Color.white);
+        _material.SetColor("_Tint", Color.white);
         EventKit.Broadcast<RoomBlock, bool>("Can Interact Room Block", this, false);
     }
 

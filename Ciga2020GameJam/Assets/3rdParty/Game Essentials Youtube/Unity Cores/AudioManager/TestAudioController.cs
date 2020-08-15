@@ -15,21 +15,21 @@ namespace UnityCore.AudioSystem
         {
             if (Input.GetKeyDown(KeyCode.T))
             {
-                AudioController.PlayAudio(AudioType.Music_01);
+                // AudioController.PlayAudio(AudioType.Music_01);
             }
             if (Input.GetKeyDown(KeyCode.G))
             {
-                AudioController.PlayAudio(AudioType.Music_02);
+                // AudioController.PlayAudio(AudioType.Music_02);
             }
             if (Input.GetKeyDown(KeyCode.B))
             {
                 if (Random.Range(0f,1f) > 0.5f)
                 {
-                    AudioController.RestartAudio(AudioType.SFX_01);
+                    // AudioController.RestartAudio(AudioType.SFX_01);
                 }
                 else
                 {
-                    AudioController.RestartAudio(AudioType.SFX_02);   
+                    // AudioController.RestartAudio(AudioType.SFX_02);   
                 }
             }
 
@@ -37,7 +37,7 @@ namespace UnityCore.AudioSystem
             if (timer>0.2f)
             {
                 timer = 0.0f;
-                AudioController.RestartAudio(AudioType.SFX_01);
+                // AudioController.RestartAudio(AudioType.SFX_01);
             }
         }
 #endif

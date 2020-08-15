@@ -91,6 +91,7 @@ namespace UnityCore.SceneManagement
         }
         private async void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, LoadSceneMode mode)
         {
+            Debug.Log("Scene Loaded!");
             //the scene is loaded by Other Scripts rather than this Controller
             if (m_TargetScene == SceneType.None)
             {
@@ -119,7 +120,7 @@ namespace UnityCore.SceneManagement
                     throw;
                 }
             }
-
+            Debug.Log("Check Page Turn Off!");
             if (m_LoadingPage != null)
             {
                 //wait for one second for the loading page to come up and then close the page
@@ -173,6 +174,8 @@ namespace UnityCore.SceneManagement
                     return "Scene_Menu";
                 case SceneType.Game:
                     return "Scene_Game";
+                case SceneType.Intro:
+                    return "Scene_Intro";
                 default:
                     LogWarning("Scene [" + sceneType + "] does not contain a string for a valid scene." );
                     return string.Empty;
@@ -187,6 +190,8 @@ namespace UnityCore.SceneManagement
                     return SceneType.Menu;
                 case "Scene_Game":
                     return SceneType.Game;
+                case "Scene_Intro":
+                    return SceneType.Intro;
                 default:
                     LogWarning("Scene [" + sceneString + "] does not match a scene type for a valid scene." );
                     return SceneType.None;

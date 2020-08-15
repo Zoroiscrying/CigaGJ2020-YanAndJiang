@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityCore.AudioSystem;
 using UnityEngine;
 using UnityEngine.iOS;
 
@@ -51,6 +52,7 @@ namespace UnityCore.MenuSystem
                 LogWarning("The page type [" + pageType + "] is not registered!");
             }
 
+            // AudioController.Instance.PlayAudio(UnityCore.AudioSystem.AudioType.UISFX_PageOn);   
             Page onPage = GetPage(pageType);
             onPage.gameObject.SetActive(true);
             onPage.Animate(true);
@@ -87,6 +89,7 @@ namespace UnityCore.MenuSystem
                 LogWarning("The page type [" + off + "] is not registered!");
             }
 
+            // AudioController.Instance.PlayAudio(UnityCore.AudioSystem.AudioType.UISFX_PageOff);
             Page offPage = GetPage(off);
             if (offPage.gameObject.activeSelf)
             {

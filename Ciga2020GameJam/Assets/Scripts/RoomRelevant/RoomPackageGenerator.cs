@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityAtoms.BaseAtoms;
+using UnityCore.AudioSystem;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -54,6 +55,7 @@ public class RoomPackageGenerator : MonoBehaviour
     
     private void GenerateOnePackage()
     {
+        AudioController.Instance.RestartAudio(UnityCore.AudioSystem.AudioType.PackageSFX_Generate);   
         Instantiate(PackagePrefab, RandomPosInRegion(), Quaternion.identity);
     }
     

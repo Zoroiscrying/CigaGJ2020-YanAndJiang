@@ -1,11 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cinemachine;
 using UnityAtoms.BaseAtoms;
+using UnityCore.AudioSystem;
+using UnityCore.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using AudioType = UnityCore.AudioSystem.AudioType;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
+
+    [Header("Item Type")] public ItemType HolderType;
+    public ItemType DecoratorType;
+    
     public FloatReference GameSecondsThisRound;
     public IntReference GameHardRate;
     public BoolReference GamePaused;
@@ -15,9 +24,58 @@ public class GameManager : MonoBehaviour
     public PageTypeAtom LoadingPageType;
     public PageTypeAtom GamePageType;
 
+    public void OnSwitchToSceneMenu()
+    {
+        AudioController.Instance.RestartAudio(AudioType.BgMusic01, true, 1.0f);
+    }
+
+    public void OnSwitchToSceneIntro()
+    {
+        AudioController.Instance.RestartAudio(AudioType.BgMusic02, true, 1.0f);
+    }
+    
+    public void OnSwitchToSceneGame()
+    {
+        AudioController.Instance.RestartAudio(AudioType.BgMusic03, true, 1.0f);
+    }
+
+    public void OnSceneDifficultyRaised(int hardRate)
+    {
+        if (hardRate == 1)
+        {
+            AudioController.Instance.RestartAudio(AudioType.BgMusic04, true, 1.0f);
+        }
+        else if (hardRate == 2)
+        {
+            AudioController.Instance.RestartAudio(AudioType.BgMusic05, true, 1.0f);
+        }
+    }
+
+    public void EnterIntroGame()
+    {
+        //没玩过intro
+        if (PlayerPrefs.GetInt("Intro") == 0)
+        {
+            SceneController.Instance.Load(SceneType.Intro, loadingPage: LoadingPageType);
+            OnSwitchToSceneIntro();
+        }
+        else
+        {
+            EnterFormalGame();
+        }
+    }
+
+    public void EnterFormalGame()
+    {
+        PlayerPrefs.SetInt("Intro", 1);
+        OnSwitchToSceneGame();
+        SceneController.Instance.Load(SceneType.Game, loadingPage: LoadingPageType);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        OnSwitchToSceneGame();
         DontDestroyOnLoad(this.gameObject);
         GamePaused.Value = false;
         RestartRound();
@@ -31,6 +89,7 @@ public class GameManager : MonoBehaviour
         List<BasicItem> items = FindObjectsOfType<BasicItem>().ToList();
         foreach (var package in packages)
         {
+            package.DestroyAttachedItem();
             package.DestroySelf();
         }
 

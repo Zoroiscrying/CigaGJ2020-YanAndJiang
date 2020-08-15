@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityCore.AudioSystem;
 using UnityEngine;
+using AudioType = UnityCore.AudioSystem.AudioType;
 
 public class RoomBlockCheck : MonoBehaviour
 {
@@ -62,7 +64,7 @@ public class RoomBlockCheck : MonoBehaviour
     //Do visuals
     private void HandleBlockCanInteract(RoomBlock roomBlock, bool canInteract)
     {
-        if (_itemHolder.HasItem)
+        if (_itemHolder.HasItem && !_itemHolder.HoldingItem.IsDecorator())
         {
             RoomBlockManager.Instance.CheckBlockAtPos(canInteract, roomBlock.BlockPosition,
                 _itemHolder.HoldingItem.PositionInfo, this._playerFacingDir);
@@ -75,34 +77,44 @@ public class RoomBlockCheck : MonoBehaviour
         // Debug.Log("Put item to block.");
         if (_itemHolder.HasItem)
         {
-            if (!RoomBlockManager.Instance.CanPutItem(roomBlock.BlockPosition, _itemHolder.HoldingItem.PositionInfo, this._playerFacingDir))
+            if (!_itemHolder.HoldingItem.IsDecorator())
             {
-                CannotApplyItemHere(roomBlock);
-                return;
-            }
-            // Debug.Log("Has Item.");
-            List<RoomBlock> blocks = RoomBlockManager.Instance.GetNeededBlockForItemPut(roomBlock.BlockPosition,
-                _itemHolder.HoldingItem.PositionInfo, this._playerFacingDir);
-            int neededBlockNum =
-                Mathf.RoundToInt(_itemHolder.HoldingItem.PositionInfo.x * _itemHolder.HoldingItem.PositionInfo.y);
-            // Debug.Log("Needed:" + neededBlockNum);
-            if (blocks.Count == neededBlockNum)
-            {
-                Debug.Log("Block Num Correct");
-                Vector3 placePosition = Vector3.zero;
-                foreach (var block in blocks)
+                if (!RoomBlockManager.Instance.CanPutItem(roomBlock.BlockPosition, _itemHolder.HoldingItem.PositionInfo, this._playerFacingDir))
                 {
-                    placePosition += block.AnchoredPosition3D;
-                    _itemHolder.HoldingItem.RegisterBlock(block);
-                    block.AddItemUpon(_itemHolder.HoldingItem);
-                    block.OnQuitInteract();
+                    CannotApplyItemHere(roomBlock);
+                    return;
                 }
-                placePosition /= blocks.Count;
-                _itemHolder.PutHandItemTo(placePosition);
+                // Debug.Log("Has Item.");
+                List<RoomBlock> blocks = RoomBlockManager.Instance.GetNeededBlockForItemPut(roomBlock.BlockPosition,
+                    _itemHolder.HoldingItem.PositionInfo, this._playerFacingDir);
+                int neededBlockNum =
+                    Mathf.RoundToInt(_itemHolder.HoldingItem.PositionInfo.x * _itemHolder.HoldingItem.PositionInfo.y);
+                // Debug.Log("Needed:" + neededBlockNum);
+                if (blocks.Count == neededBlockNum)
+                {
+                    Debug.Log("Block Num Correct");
+                    Vector3 placePosition = Vector3.zero;
+                    foreach (var block in blocks)
+                    {
+                        placePosition += block.AnchoredPosition3D;
+                        _itemHolder.HoldingItem.RegisterBlock(block);
+                        block.AddItemUpon(_itemHolder.HoldingItem);
+                        block.OnQuitInteract();
+                    }
+                    placePosition /= blocks.Count;
+                    _itemHolder.PutHandItemTo(placePosition);
+                    AudioController.Instance.RestartAudio(AudioType.ItemSFX_PutDown);
+                }
+                else
+                {
+                    CannotApplyItemHere(roomBlock);
+                    AudioController.Instance.RestartAudio(AudioType.ItemSFX_CannotDoThis);
+                }   
             }
             else
             {
-                CannotApplyItemHere(roomBlock);
+                Debug.Log("Target is a Decorator!"); 
+                AudioController.Instance.RestartAudio(AudioType.ItemSFX_CannotDoThis);
             }
         }
     }

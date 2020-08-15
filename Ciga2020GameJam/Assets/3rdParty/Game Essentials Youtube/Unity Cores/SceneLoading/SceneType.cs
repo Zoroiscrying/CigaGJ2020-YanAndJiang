@@ -8,7 +8,8 @@ namespace UnityCore.SceneManagement
     {
         None,
         Menu,
-        Game
+        Game,
+        Intro
     }
 }
 

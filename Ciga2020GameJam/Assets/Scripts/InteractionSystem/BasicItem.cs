@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using UnityAtoms.BaseAtoms;
+using UnityCore.AudioSystem;
 using UnityEngine;
+using AudioType = UnityCore.AudioSystem.AudioType;
 
 public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
 {
@@ -86,9 +88,16 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
     {
         this.OnRemoveBlockUI();
         this.ThawPosition();
+        bool hasAttachedBefore = false;
         foreach (var block in attachedRoomBlocks)
         {
+            hasAttachedBefore = true;
             block.DropItem();
+        }
+
+        if (hasAttachedBefore)
+        {
+            AudioController.Instance.RestartAudio(AudioType.ItemSFX_DropDown);
         }
         attachedRoomBlocks.Clear();
         this.m_positioned = false;
@@ -121,6 +130,18 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
         _rigidbody.constraints = RigidbodyConstraints.None;
     }
 
+    public bool IsDecorator()
+    {
+        foreach (var itemType in _selfItemTypes)
+        {
+            if (itemType == GameManager.Instance.DecoratorType)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void PutItemOn(BasicItem item)
     {
         //把满足条件的消去
@@ -145,11 +166,28 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
 
     public bool CanPutItem(BasicItem item)
     {
+        //我自己是什么属性（不能是Decorator）
+        foreach (var itemType in _selfItemTypes)
+        {
+            if (itemType == GameManager.Instance.DecoratorType)
+            {
+                return false;
+            }
+        }
+        
+        //我还有空闲的位置吗？
         if (requireItemTypes.Count == 0 || positionPoints.Count == 0)
         {
             return false;
         }
+
+        //对方物品是Decorator吗？
+        if (!item.IsDecorator())
+        {
+            return false;
+        }
         
+        //我需求的属性满足Decorator的属性吗
         foreach (var itemType in item.ItemTypes)
         {
             if (this.requireItemTypes.Contains(itemType))
@@ -231,11 +269,16 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
     private void OnDestroy()
     {
         EventKit.Broadcast<int>("Add Mass", -this.Mass);
+        if (this.gameObject.activeSelf)
+        {
+            AudioController.Instance.RestartAudio(AudioType.ItemSFX_Destroy);
+        }
     }
 
     private void Satisfied()
     {
         //Add Recovered Task
+        AudioController.Instance.RestartAudio(AudioType.ItemSFX_Finish);
         CompletedTaskAllNum.Value++;
         CompltedTaskNum.Value++;
         Timer.Register(2.0f, ()=>Destroy(this.transform.gameObject));
@@ -258,10 +301,13 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
         if (yes)
         {
             this._material.SetColor("_BaseColor", Color.blue);
+            this._material.SetFloat("_Outline", .6f);
+            this._material.SetColor("_OutlineColor", Color.yellow);
         }
         else
         {
             this._material.SetColor("_BaseColor", Color.white);
+            this._material.SetFloat("_Outline", .0f);
         }
     }
 

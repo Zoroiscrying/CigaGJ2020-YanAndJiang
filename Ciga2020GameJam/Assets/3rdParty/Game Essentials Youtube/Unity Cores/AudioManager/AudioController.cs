@@ -66,6 +66,7 @@ namespace UnityCore.AudioSystem
         {
             if (AudioController.Instance == this)
             {
+                DontDestroyOnLoad(this.gameObject);
                 //initialized the controller
                 Configure();
                 // m_AudioTable = new Hashtable();

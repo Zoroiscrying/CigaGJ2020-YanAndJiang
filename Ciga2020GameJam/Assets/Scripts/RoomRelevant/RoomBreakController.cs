@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityAtoms.BaseAtoms;
+using UnityCore.AudioSystem;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -16,6 +17,7 @@ public class RoomBreakController : MonoBehaviour
 
     public void RecoverOneBlock()
     {
+        AudioController.Instance.PlayAudio(UnityCore.AudioSystem.AudioType.SceneSFX_Cheer);   
         RoomBlockManager.Instance.RecoverOneBlock();
         DestroyedBlockNum.Value++;
     }
@@ -76,6 +78,7 @@ public class RoomBreakController : MonoBehaviour
             //destroy some floors and relevant objects on it
             if (RoomBlockManager.Instance.DestroyOneBlock())
             {
+                AudioController.Instance.PlayAudio(UnityCore.AudioSystem.AudioType.SceneSFX_Boom);   
                 DestroyedBlockNum.Value--;
             }
         }
@@ -102,6 +105,7 @@ public class RoomBreakController : MonoBehaviour
             {
                 int randomIndex = Random.Range(0, packages.Count);
                 var package = packages[randomIndex];
+                package.DestroyAttachedItem();
                 package.DestroySelf();
                 packages.RemoveAt(randomIndex);   
             }

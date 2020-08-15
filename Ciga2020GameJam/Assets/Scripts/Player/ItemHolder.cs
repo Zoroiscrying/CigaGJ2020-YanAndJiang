@@ -2,7 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityAtoms.BaseAtoms;
+using UnityCore.AudioSystem;
 using UnityEngine;
+using UnityCore.AudioSystem;
+using AudioType = UnityCore.AudioSystem.AudioType;
 
 public class ItemHolder : MonoBehaviour, IPositionable
 {
@@ -41,6 +44,10 @@ public class ItemHolder : MonoBehaviour, IPositionable
                     item.PutItemOn(this._item);
                     PutHandItemTo(item);
                 }
+                else
+                {
+                    AudioController.Instance.RestartAudio(AudioType.ItemSFX_CannotDoThis);
+                }
             }//玩家没拿着物品，导致此物品被拿起
             else
             {
@@ -77,6 +84,7 @@ public class ItemHolder : MonoBehaviour, IPositionable
         {
             return;
         }
+        AudioController.Instance.RestartAudio(AudioType.ItemSFX_Compose);
         playerHoldingItem.Value = true;
         _item = item;
         _item.ClearBlock();
@@ -92,6 +100,7 @@ public class ItemHolder : MonoBehaviour, IPositionable
         {
             return;
         }
+        AudioController.Instance.RestartAudio(AudioType.ItemSFX_DropDown);
         playerHoldingItem.Value = false;
         _item.ThawPosition();
         _item.ChangeCollider(false);
@@ -105,12 +114,47 @@ public class ItemHolder : MonoBehaviour, IPositionable
         {
             return;
         }
+        
+        Vector3 rawDir = this.transform.position - putTo.transform.position;
+        Vector2 XZdir = new Vector2(rawDir.x, rawDir.z).normalized;
+        float rotY = 0;
+        if (Mathf.Abs(XZdir.x) > Mathf.Abs(XZdir.y))
+        {
+            // XZdir = new Vector2(Mathf.RoundToInt(XZdir.x), 0);
+            if (Mathf.RoundToInt(XZdir.x) > 0)
+            {
+                rotY = 90;
+            }
+            else
+            {
+                rotY = 270;
+            }
+        }
+        else
+        {
+            if (Mathf.RoundToInt(XZdir.y) > 0)
+            {
+                rotY = 0;
+            }
+            else
+            {
+                rotY = 180;
+            }
+            // XZdir = new Vector2(0, Mathf.RoundToInt(XZdir.y));
+        }
+        
         playerHoldingItem.Value = false;
         _item.transform.position = putTo.CalculatePosition(putTo);
         _item.transform.SetParent(putTo.transform, true);
+        _item.transform.localScale = Vector3.one;
+        _item.ThawPosition();
+        var rotation = _item.transform.eulerAngles;
+        rotation = new Vector3(0, rotY + _item.DegreeRotY1, 0);
+        _item.transform.eulerAngles = rotation;
         _item.FreezePosition();
         _item.ChangeCollider(false);
         _item = null;
+        AudioController.Instance.RestartAudio(UnityCore.AudioSystem.AudioType.ItemSFX_Compose);
     }
 
     public void PutHandItemTo(Vector3 position)

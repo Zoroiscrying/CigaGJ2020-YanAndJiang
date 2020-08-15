@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8a83ccba403d8d489299240d3309a90, type: 3}
+  m_Name: BgMusic
+  m_EditorClassIdentifier: 
+  AudioObjects:
+  - {fileID: 11400000, guid: dec7cff07dcbec24886efe2b0ed4e6f7, type: 2}
+  - {fileID: 11400000, guid: 01b60d1f34676a341b57f936fb57180a, type: 2}
+  - {fileID: 11400000, guid: f3a368b2419c29c47aa88975dc8ad713, type: 2}
+  - {fileID: 11400000, guid: 414230ad87ec0c6478cd9ac480193e80, type: 2}
+  - {fileID: 11400000, guid: 65674f28900f5c745b2dfc4b239c3170, type: 2}
+  PlayingType: 1
+  audioSourceSetting: {fileID: 11400000, guid: 7f7609a9899c3c445aedb216270cd9a5, type: 2}

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Win32.SafeHandles;
 using NaughtyCharacter;
+using UnityCore.AudioSystem;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -20,6 +21,7 @@ public class BoundaryChecker : MonoBehaviour
         
         if (other.CompareTag("Player"))
         {
+            AudioController.Instance.RestartAudio(UnityCore.AudioSystem.AudioType.SceneSFX_FallDown);   
             var characterController = other.GetComponent<CharacterController>();
             var character = other.GetComponent<Character>();
             // characterController.SimpleMove(Vector3.zero);
