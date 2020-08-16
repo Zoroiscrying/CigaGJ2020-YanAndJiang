@@ -25,21 +25,33 @@ public class ItemGenerator : Singleton<ItemGenerator>
 
         foreach (var randomTypeList in itemInfoBase.RandomTypes)
         {
-            itemTypes.Add(randomTypeList.GetRandomType());
+            var itemType = randomTypeList.GetRandomType();
+            if (itemType)
+            {
+                itemTypes.Add(randomTypeList.GetRandomType());   
+            }
         }
 
         foreach (var randomRequireTypeList in itemInfoBase.RandomRequireTypes)
         {
-            requireTypes.Add(randomRequireTypeList.GetRandomType());
+            var requireType = randomRequireTypeList.GetRandomType();
+            if (requireType)
+            {
+                requireTypes.Add(requireType);   
+            }
         }
         
-        for (int i = 0; i < GameHardRate.Value + 1 ; i++)
+        for (int i = 1; i < GameHardRate.Value + 1 ; i++)
         {
             foreach (var randomRequireTypeList in itemInfoBase.RandomRequireTypes)
             {
-                if (Random.Range(0f,1f) > 0.5f)
+                if (Random.Range(0f,1f) > 0.8f)
                 {
-                    requireTypes.Add(randomRequireTypeList.GetRandomType());   
+                    var requireType = randomRequireTypeList.GetRandomType();
+                    if (requireType)
+                    {
+                        requireTypes.Add(requireType);   
+                    }
                 }
             }  
         }

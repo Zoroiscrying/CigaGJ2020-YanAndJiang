@@ -84,6 +84,7 @@ public class ItemHolder : MonoBehaviour, IPositionable
         {
             return;
         }
+        ImpulseManager.Instance.GenerateImpulse(1);
         AudioController.Instance.RestartAudio(AudioType.ItemSFX_Compose);
         playerHoldingItem.Value = true;
         _item = item;
@@ -100,6 +101,7 @@ public class ItemHolder : MonoBehaviour, IPositionable
         {
             return;
         }
+        ImpulseManager.Instance.GenerateImpulse(1);
         AudioController.Instance.RestartAudio(AudioType.ItemSFX_DropDown);
         playerHoldingItem.Value = false;
         _item.ThawPosition();
@@ -114,7 +116,7 @@ public class ItemHolder : MonoBehaviour, IPositionable
         {
             return;
         }
-        
+        ImpulseManager.Instance.GenerateImpulse(1);
         Vector3 rawDir = this.transform.position - putTo.transform.position;
         Vector2 XZdir = new Vector2(rawDir.x, rawDir.z).normalized;
         float rotY = 0;

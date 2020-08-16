@@ -37,8 +37,8 @@ public class ItemUIHolder : MonoBehaviour
     private void RecalculateSize()
     {
         int imageWidth = 40;
-        int padding = 5;
-        int spacing = 5;
+        int padding = 10;
+        int spacing = 10;
         var width = imageWidth + padding * 2;
         var height = imageWidth * representImages.Count + spacing * (representImages.Count - 1) + padding * 2;
         if (!_rectTransform)
@@ -60,11 +60,22 @@ public class ItemUIHolder : MonoBehaviour
     public void InitializeUI(BasicItem item)
     {
         BoundItem = item;
-        foreach (var itemType in item.requireItemTypes)
+        if (!BoundItem.IsDecorator())
         {
-            GenerateImageObject(itemType);
+            foreach (var itemType in item.requireItemTypes)
+            {
+                GenerateImageObject(itemType);
+            }
+            storedTypes = item.requireItemTypes.ToList();   
         }
-        storedTypes = item.requireItemTypes.ToList();
+        else
+        {
+            foreach (var itemType in item.ItemTypes)
+            {
+                GenerateImageObject(itemType);
+            }
+            storedTypes = item.ItemTypes.ToList();   
+        }
         RecalculateSize();
     }
     

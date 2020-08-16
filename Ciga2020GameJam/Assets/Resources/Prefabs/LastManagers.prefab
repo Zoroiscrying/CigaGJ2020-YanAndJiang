@@ -144,6 +144,10 @@ MonoBehaviour:
   MenuPageType: {fileID: 11400000, guid: df9660bfd657fc746bb6c9e80ce67593, type: 2}
   LoadingPageType: {fileID: 11400000, guid: e90e12ceaa6ab464ab6b9e4c3cc1cad2, type: 2}
   GamePageType: {fileID: 11400000, guid: e3fbcea4e6a6dce46a300eaade4ba0e9, type: 2}
+  ItemDestroyedParticle: {fileID: 4415938651068603557, guid: c1b64e4a60f44a843829840f2561bfaa,
+    type: 3}
+  ItemCompleteParticle: {fileID: 2413038620219909709, guid: 3c9da92878522d24aa8a3520178e4449,
+    type: 3}
 --- !u!114 &2439941108468214263
 MonoBehaviour:
   m_ObjectHideFlags: 0

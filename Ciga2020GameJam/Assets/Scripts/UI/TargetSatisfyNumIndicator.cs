@@ -9,6 +9,7 @@ public class TargetSatisfyNumIndicator : MonoBehaviour
     public IntReference currentBrokenBlockNum;
     public IntReference currentSatisfiedNum;
     public IntReference targetSatisfiyNum;
+    public GameObject Bg;
     [SerializeField] private TextMeshProUGUI _textMeshProUgui;
 
     public void UpdateUI()
@@ -16,9 +17,11 @@ public class TargetSatisfyNumIndicator : MonoBehaviour
         if (currentBrokenBlockNum.Value <= 0)
         {
             _textMeshProUgui.enabled = false;
+            Bg.SetActive(false);
             return;
         }
 
+        Bg.SetActive(true);
         _textMeshProUgui.enabled = true;
         _textMeshProUgui.text =
             "Compose " + currentSatisfiedNum.Value + "/" + targetSatisfiyNum.Value + " Items to Repair!";

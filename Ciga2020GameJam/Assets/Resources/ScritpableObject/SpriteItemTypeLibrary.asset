@@ -12,5 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0b88c1493d6ca94e8e37f08d13caaa9, type: 3}
   m_Name: SpriteItemTypeLibrary
   m_EditorClassIdentifier: 
-  ItemTypeSpritePairs: []
-  DefaultSprite: {fileID: 21300000, guid: 8c25ac30c7b7d4e3b90bed61d900d244, type: 3}
+  ItemTypeSpritePairs:
+  - ItemType: {fileID: 11400000, guid: 24ecf8149b743e647b4050ea3daa479e, type: 2}
+    Sprite: {fileID: 21300000, guid: e30bd6531d1b16446a881ac93a8cddc0, type: 3}
+  - ItemType: {fileID: 11400000, guid: ec2ed7c23b464234ebe3141b01ad2c96, type: 2}
+    Sprite: {fileID: 21300000, guid: 7bcaf225ebb84be4fb7649ddf4cdef46, type: 3}
+  - ItemType: {fileID: 11400000, guid: 71c8337071737df4f9862cf0070267e0, type: 2}
+    Sprite: {fileID: 21300000, guid: 8a9a7b5c28deca14eab64245b0ba51ae, type: 3}
+  - ItemType: {fileID: 11400000, guid: 7c7866f64f8b589429d1c752a914c03e, type: 2}
+    Sprite: {fileID: 21300000, guid: 7cd3d382ca051734d8caab7a49c0fdba, type: 3}
+  - ItemType: {fileID: 11400000, guid: 76d595c66b716004f8e57f349cad87a7, type: 2}
+    Sprite: {fileID: 21300000, guid: 575047a660fdd544f938192e61e5aa97, type: 3}
+  - ItemType: {fileID: 11400000, guid: 254b11c2371ebf3428c50e5cef02947a, type: 2}
+    Sprite: {fileID: 21300000, guid: bc2c3f832602e3b4ab21e0642d262411, type: 3}
+  - ItemType: {fileID: 11400000, guid: 9065e37a2496f5d4da64fcfc88d924fc, type: 2}
+    Sprite: {fileID: 21300000, guid: 777f6c635ca84324ca0d16329ab99a6a, type: 3}
+  - ItemType: {fileID: 11400000, guid: 289dcbc7db3ea58448aa47615095d2fa, type: 2}
+    Sprite: {fileID: 21300000, guid: f78e845c17147854b9786a040ca4fc2c, type: 3}
+  - ItemType: {fileID: 11400000, guid: a985cb6490483fd4b94d1df11eea2192, type: 2}
+    Sprite: {fileID: 21300000, guid: 462ba252bda811d44b62857777d858c1, type: 3}
+  - ItemType: {fileID: 11400000, guid: 3acfc9d4ebbabb44bb874666d7178276, type: 2}
+    Sprite: {fileID: 0}
+  - ItemType: {fileID: 11400000, guid: 1af74e04035e34b408fa3c174b4534a1, type: 2}
+    Sprite: {fileID: 0}
+  - ItemType: {fileID: 11400000, guid: d8c6461e34072724b86af826b312307c, type: 2}
+    Sprite: {fileID: 0}
+  DefaultSprite: {fileID: 21300000, guid: c3c99b8d76418472cb0261944ff3deb8, type: 3}

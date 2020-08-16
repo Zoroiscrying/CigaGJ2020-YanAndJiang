@@ -44,11 +44,6 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
         EventKit.Broadcast<int>("Add Mass", this.Mass);
     }
 
-    void Update()
-    {
-        
-    }
-    
     #endregion
 
     #region Public Functions
@@ -76,6 +71,17 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
         this._itemUiHolder = UIController.Instance.GenerateUIHolder(this);
         _itemUiHolder.InitializeUI(this);
         _itemUiHolder.gameObject.SetActive(false);
+        
+        //change material color based on colorType
+        foreach (var type in itemTypes)
+        {
+            if (type.HasColor)
+            {
+                _material = GetComponent<Renderer>().material;
+                this._material.SetColor("_Tint", type.Color);
+                return;
+            }
+        }
     }
     
     public void RegisterBlock(RoomBlock block)
@@ -153,6 +159,7 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
                 {
                     _itemUiHolder.UpdateUI(puttingOnType);
                     requireItemTypes.RemoveAt(i);
+                    EventKit.Broadcast<int, Vector3>("Add Score", 50, this.transform.position);
                 }
 
                 if (CheckIfSatisfied())
@@ -251,6 +258,24 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
         DoUiHint(false);
     }
 
+    public override void OnWithInCheckRange()
+    {
+        base.OnWithInCheckRange();
+        if (this.IsDecorator())
+        {
+            OnSetBlockUI();
+        }
+    }
+
+    public override void OnWithOutCheckRange()
+    {
+        base.OnWithOutCheckRange();
+        if (this.IsDecorator())
+        {
+            OnRemoveBlockUI();
+        }
+    }
+
     #endregion
 
     #region Private Functions
@@ -268,9 +293,16 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
 
     private void OnDestroy()
     {
+        if (ImpulseManager.Instance)
+        {
+            ImpulseManager.Instance.GenerateImpulse(2);   
+        }
         EventKit.Broadcast<int>("Add Mass", -this.Mass);
         if (this.gameObject.activeSelf)
         {
+            var obj = Instantiate(GameManager.Instance.ItemDestroyedParticle, this.transform.position,
+                Quaternion.identity);
+            Timer.Register(5.0f, (() => Destroy(obj.gameObject)));
             AudioController.Instance.RestartAudio(AudioType.ItemSFX_Destroy);
         }
     }
@@ -278,11 +310,19 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
     private void Satisfied()
     {
         //Add Recovered Task
+        EventKit.Broadcast<int, Vector3>("Add Score", 100 + 50 * this.transform.childCount, this.transform.position);
+        ImpulseManager.Instance.GenerateImpulse(2);
         AudioController.Instance.RestartAudio(AudioType.ItemSFX_Finish);
         CompletedTaskAllNum.Value++;
         CompltedTaskNum.Value++;
         Timer.Register(2.0f, ()=>Destroy(this.transform.gameObject));
-        this.transform.DOScale(Vector3.zero, 1.0f).OnComplete((() => this.ClearBlock()));
+        this.transform.DOScale(Vector3.zero, 1.0f).OnComplete((() =>
+        {
+            this.ClearBlock();
+            var obj = Instantiate(GameManager.Instance.ItemCompleteParticle, this.transform.position,
+                Quaternion.identity);
+            Timer.Register(5.0f, (() => Destroy(obj.gameObject)));
+        }));
     }
 
     private void HandOverSelf()

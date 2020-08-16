@@ -8,6 +8,12 @@ public abstract class InteractableObject : MonoBehaviour, IInteractable
 
     public virtual void OnWithInCheckRange()
     {
+        
+    }
+
+    public virtual void OnWithOutCheckRange()
+    {
+        
     }
     
     public virtual void OnInteract()

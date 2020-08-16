@@ -9,6 +9,7 @@ public class DetectionEntity : MonoBehaviour
     private List<InteractableObject> interactables = new List<InteractableObject>();
     private InteractableObject currentInteractable;
     [SerializeField] private ItemHolder _itemHolder;
+    [SerializeField] private float detectionRange = 2.0f;
 
     // Update is called once per frame
     void Update()
@@ -106,6 +107,7 @@ public class DetectionEntity : MonoBehaviour
         var interactable = other.GetComponent<InteractableObject>();
         if (interactable != null && interactable.CanInteract)
         {
+            interactable.OnWithInCheckRange();
             if (!interactables.Contains(interactable))
             {
                 interactables.Add(interactable);
@@ -119,6 +121,7 @@ public class DetectionEntity : MonoBehaviour
         var interactable = other.GetComponent<InteractableObject>();
         if (interactable != null && interactable.CanInteract)
         {
+            interactable.OnWithOutCheckRange();
             if (interactables.Contains(interactable))
             {
                 interactables.Remove(interactable);
@@ -133,9 +136,15 @@ public class DetectionEntity : MonoBehaviour
         if (interactable != null && interactable.CanInteract && !interactables.Contains(interactable))
         {
             interactables.Add(interactable);
+            // interactable.OnWithInCheckRange();
         }
-        
         CheckInteractable();
+
+        var touchable = other.GetComponent<BasicTouchItem>();
+        if (touchable && Vector3.Distance(this.transform.position, touchable.transform.position) <= this.detectionRange)
+        {
+            touchable.OnTouch();
+        }
         // var interactable = other.GetComponent<InteractableObject>();
         // if (interactable != null)
         // {

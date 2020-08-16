@@ -16,5 +16,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 26a298ff7f33a914eab428a7c863d0d0, type: 2}
   - {fileID: 11400000, guid: 8f684f0890231ef47a3bfe7468da37dd, type: 2}
   - {fileID: 11400000, guid: 7124bb6cd145f4a45840759c4549bbe3, type: 2}
-  PlayingType: 0
+  - {fileID: 11400000, guid: 3278f07cc67a3314494274f332a2eb89, type: 2}
+  PlayingType: 20
   audioSourceSetting: {fileID: 11400000, guid: affbd805b3227ac47b404d61a820d1b4, type: 2}

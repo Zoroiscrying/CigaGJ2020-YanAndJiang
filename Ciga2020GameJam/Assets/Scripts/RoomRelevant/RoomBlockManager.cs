@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class RoomBlockManager : Singleton<RoomBlockManager>
 {
+    public ParticleSystem RoomRecoverParticle;
+    public ParticleSystem RoomDisappearParticle;
     public IntReference DestroyedBlockCount;
     // [SerializeField] private List<RoomBlock> _roomBlocks;
     private Dictionary<Vector2, RoomBlock> _blockDictionary;
@@ -126,6 +128,9 @@ public class RoomBlockManager : Singleton<RoomBlockManager>
             block.RecoverBlock();
             this._blockDictionary.Add(block.BlockPosition, block);
             DestroyedBlockCount.Value--;
+            var vfx = Instantiate(RoomRecoverParticle, block.AnchoredPosition3D, Quaternion.identity);
+            EventKit.Broadcast<int, Vector3>("Add Score", 500, block.AnchoredPosition3D);
+            Destroy(vfx, 5.0f);
         }
     }
 
@@ -148,7 +153,37 @@ public class RoomBlockManager : Singleton<RoomBlockManager>
         this._blockDictionary.Remove(block.BlockPosition);
         _destroyedBlocks.Add(block);
         DestroyedBlockCount.Value++;
+        var vfx = Instantiate(RoomDisappearParticle, block.AnchoredPosition3D, Quaternion.identity);
+        Destroy(vfx, 5.0f);
         return true;
+    }
+
+    public void DestroyAllBlocks()
+    {
+        var blocks = FindObjectsOfType<RoomBlock>().ToList();
+        foreach (var block in blocks)
+        {
+            block.DestroyBlock();
+            _blockDictionary.Remove(block.BlockPosition);
+            if (!_destroyedBlocks.Contains(block))
+            {
+                _destroyedBlocks.Add(block);   
+            }
+        }
+    }
+
+    public void RecoverAllBlocks()
+    {
+        var blocks = FindObjectsOfType<RoomBlock>().ToList();
+        foreach (var block in blocks)
+        {
+            block.RecoverBlock();
+            if (!_blockDictionary.ContainsKey(block.BlockPosition))
+            {
+                _blockDictionary.Add(block.BlockPosition, block);   
+            }
+            _destroyedBlocks.Clear();
+        }
     }
 
     #endregion

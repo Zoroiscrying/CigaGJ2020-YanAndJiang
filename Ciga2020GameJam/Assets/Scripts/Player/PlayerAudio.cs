@@ -21,11 +21,19 @@ public class PlayerAudio : MonoBehaviour
     {
         if (!_character.IsGrounded && _characterLastFrameGrounded)
         {
-            Debug.Log("Jumped!");
+            // Debug.Log("Jumped!");
             AudioController.Instance.RestartAudio(AudioType.PlayerSFX_Jump);  
+        }else if (_character.IsGrounded && !_characterLastFrameGrounded)
+        {
+            ImpulseManager.Instance.GenerateImpulse(1);
         }
 
         _characterLastFrameGrounded = _character.IsGrounded;
+        //
+        // if (Input.GetKeyDown(KeyCode.Space))
+        // {
+        //     EventKit.Broadcast<int, Vector3>("Add Score", Random.Range(0, 500), this.transform.position);
+        // }
         
         
     }

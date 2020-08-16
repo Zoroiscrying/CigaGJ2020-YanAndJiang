@@ -48,6 +48,9 @@ public class BasicPackage : InteractableObject, IMass
         GenerateItem();
         //自身消失
         //粒子特效
+        var obj = Instantiate(GameManager.Instance.ItemDestroyedParticle, this.transform.position,
+            Quaternion.identity);
+        Timer.Register(5.0f, (() => Destroy(obj.gameObject)));
         DestroySelf();
     }
 
@@ -67,6 +70,8 @@ public class BasicPackage : InteractableObject, IMass
     
     public void DestroySelf()
     {
+        
+        ImpulseManager.Instance.GenerateImpulse(2);
         EventKit.Broadcast<int>("Add Mass", -_mass);
         if (this.gameObject.activeSelf)
         {

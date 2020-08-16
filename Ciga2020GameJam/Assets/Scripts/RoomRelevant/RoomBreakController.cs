@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cinemachine;
 using UnityAtoms.BaseAtoms;
 using UnityCore.AudioSystem;
 using UnityEngine;
@@ -14,12 +15,14 @@ public class RoomBreakController : MonoBehaviour
     public IntReference RecoverRequiredTaskNum;
     public IntReference CompletedTask;
     public IntReference DestroyedBlockNum;
+    public IntReference MaxDestroyedBlockNum;
+    public CinemachineImpulseSource CinemachineImpulseSource;
 
     public void RecoverOneBlock()
     {
         AudioController.Instance.PlayAudio(UnityCore.AudioSystem.AudioType.SceneSFX_Cheer);   
         RoomBlockManager.Instance.RecoverOneBlock();
-        DestroyedBlockNum.Value++;
+        DestroyedBlockNum.Value--;
     }
 
     private void OnEnable()
@@ -43,6 +46,11 @@ public class RoomBreakController : MonoBehaviour
     {
         CheckRoomMass();
         CheckRecoverCount();
+        if (DestroyedBlockNum.Value > MaxDestroyedBlockNum.Value && !GameManager.Instance.GamePaused)
+        {
+            RoomBlockManager.Instance.DestroyAllBlocks();
+            GameManager.Instance.PauseGame(true);
+        }
     }
 
     public void AddRoomMass(int mass)
@@ -78,8 +86,9 @@ public class RoomBreakController : MonoBehaviour
             //destroy some floors and relevant objects on it
             if (RoomBlockManager.Instance.DestroyOneBlock())
             {
+                CinemachineImpulseSource.GenerateImpulse();
                 AudioController.Instance.PlayAudio(UnityCore.AudioSystem.AudioType.SceneSFX_Boom);   
-                DestroyedBlockNum.Value--;
+                DestroyedBlockNum.Value++;
             }
         }
     }

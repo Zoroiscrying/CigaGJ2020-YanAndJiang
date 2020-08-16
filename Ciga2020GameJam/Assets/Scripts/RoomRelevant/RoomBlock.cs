@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class RoomBlock : InteractableObject,IPositionable
 {
+    [SerializeField] private Color CanInteractCol;
     [SerializeField] private Vector2 blockPosition;
     [SerializeField] private GameObject anchorPosition;
     private BasicItem holdingItem;
@@ -50,7 +51,7 @@ public class RoomBlock : InteractableObject,IPositionable
     {
         base.OnCanInteract();
         _material.SetColor("_BaseColor", Color.yellow);
-        _material.SetColor("_Tint", Color.yellow);
+        _material.SetColor("_Tint", CanInteractCol);
         EventKit.Broadcast<RoomBlock, bool>("Can Interact Room Block", this, true);
     }
 
@@ -69,15 +70,18 @@ public class RoomBlock : InteractableObject,IPositionable
             if (hasItemUpon)
             {
                 _material.SetColor("_BaseColor", Color.cyan);
+                _material.SetColor("_Tint", Color.gray);
             }
             else
             {
                 _material.SetColor("_BaseColor", Color.red);
+                _material.SetColor("_Tint", CanInteractCol);
             }
         }
         else
         {
             _material.SetColor("_BaseColor", Color.white);
+            _material.SetColor("_Tint", Color.white);
         }
     }
 

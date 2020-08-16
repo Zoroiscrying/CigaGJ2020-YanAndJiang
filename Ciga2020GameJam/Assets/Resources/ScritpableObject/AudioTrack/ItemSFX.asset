@@ -16,8 +16,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9b0d3ff04057a6445b2a05adce88770d, type: 2}
   - {fileID: 11400000, guid: 58cb0cf59fb46c94cbdf498ad8374165, type: 2}
   - {fileID: 11400000, guid: d79f9920427c1d9408693a0676120b9d, type: 2}
-  - {fileID: 11400000, guid: 3278f07cc67a3314494274f332a2eb89, type: 2}
   - {fileID: 11400000, guid: d8d12b11a46b2a24a8d4d3de0d74a822, type: 2}
   - {fileID: 11400000, guid: cf65068e036b5ef488e89b38bf372211, type: 2}
-  PlayingType: 6
+  PlayingType: 7
   audioSourceSetting: {fileID: 11400000, guid: affbd805b3227ac47b404d61a820d1b4, type: 2}
