@@ -45,7 +45,6 @@ public class HardRateIndicator : MonoBehaviour
                 break;        
         }
         
-        Debug.Log("sLIDING OUT!");
         BgObj.DOLocalMoveX(260, 1.0f).SetEase(Ease.OutBack);
         this._rectTransform.DOLocalMoveX(260, 1.0f).SetEase(Ease.OutBack);
 

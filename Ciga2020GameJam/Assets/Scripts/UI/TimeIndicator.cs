@@ -17,7 +17,7 @@ public class TimeIndicator : MonoBehaviour
     {
         if (currentTime >= 60 * multiplier)
         {
-            Debug.Log("sLIDING OUT!");
+            // Debug.Log("sLIDING OUT!");
             multiplier++;
             BgObj.DOLocalMoveX(150, 1.0f).SetEase(Ease.OutBack);
             this._rectTransform.DOLocalMoveX(150, 1.0f).SetEase(Ease.OutBack);

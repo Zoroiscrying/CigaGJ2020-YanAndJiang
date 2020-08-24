@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6994c19aa784dfe4d905118f39b6f2a2, type: 3}
   m_Name: ItemInfoBase_Sofa1X1
   m_EditorClassIdentifier: 
-  MassBase: 0
-  ItemPrefab: {fileID: 0}
+  MassBase: 1
+  ItemPrefab: {fileID: 5412288185650547108, guid: 147c66f8e5cb49543838ca04517b42c7,
+    type: 3}
   RandomTypes: []
-  MustTypes: []
-  RandomRequireTypes: []
+  MustTypes:
+  - {fileID: 11400000, guid: a985cb6490483fd4b94d1df11eea2192, type: 2}
+  RandomRequireTypes:
+  - {fileID: 11400000, guid: 837e0d456d14f5d42bd71d1a78a0c7ce, type: 2}

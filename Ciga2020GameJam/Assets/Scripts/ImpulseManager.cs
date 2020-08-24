@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Cinemachine;
-using UnityEngine;
-using Random = UnityEngine.Random;
+﻿using Cinemachine;
 
 public class ImpulseManager : Singleton<ImpulseManager>
 {
@@ -19,14 +14,23 @@ public class ImpulseManager : Singleton<ImpulseManager>
     {
         if (level == 1)
         {
-            MinSource.GenerateImpulse();
+            if (MinSource)
+            {
+                MinSource.GenerateImpulse();   
+            }
         }else if (level == 2)
         {
-            MidSource.GenerateImpulse();
+            if (MidSource)
+            {
+                MidSource.GenerateImpulse();   
+            }
         }
         else
         {
-            MinSource.GenerateImpulse();
+            if (MidSource)
+            {
+                MinSource.GenerateImpulse();   
+            }
         }
     }
 }

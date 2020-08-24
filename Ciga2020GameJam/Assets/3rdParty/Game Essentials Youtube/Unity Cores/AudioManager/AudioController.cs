@@ -72,10 +72,6 @@ namespace UnityCore.AudioSystem
                 // m_AudioTable = new Hashtable();
                 // m_JobTable = new Hashtable();
             }
-            else
-            {
-                Destroy(this.gameObject);
-            }   
         }
 
         private void OnDisable()

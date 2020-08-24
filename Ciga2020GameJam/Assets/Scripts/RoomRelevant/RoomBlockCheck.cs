@@ -92,7 +92,7 @@ public class RoomBlockCheck : MonoBehaviour
                 // Debug.Log("Needed:" + neededBlockNum);
                 if (blocks.Count == neededBlockNum)
                 {
-                    Debug.Log("Block Num Correct");
+                    // Debug.Log("Block Num Correct");
                     Vector3 placePosition = Vector3.zero;
                     foreach (var block in blocks)
                     {

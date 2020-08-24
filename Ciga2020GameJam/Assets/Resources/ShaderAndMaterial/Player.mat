@@ -94,4 +94,4 @@ Material:
     - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _SpecularTint: {r: 1, g: 1, b: 1, a: 0}
-    - _Tint: {r: 0.84039277, g: 1, b: 0.6839622, a: 0}
+    - _Tint: {r: 1.272937, g: 1.319508, b: 0.8279266, a: 0}

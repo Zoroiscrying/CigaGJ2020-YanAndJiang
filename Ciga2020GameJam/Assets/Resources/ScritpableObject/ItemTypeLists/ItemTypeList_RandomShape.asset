@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: ItemTypeList_RandomShape
   m_EditorClassIdentifier: 
   ItemTypes:
-  - {fileID: 11400000, guid: 9065e37a2496f5d4da64fcfc88d924fc, type: 2}
-  - {fileID: 11400000, guid: 76d595c66b716004f8e57f349cad87a7, type: 2}
   - {fileID: 11400000, guid: 254b11c2371ebf3428c50e5cef02947a, type: 2}
+  - {fileID: 11400000, guid: 76d595c66b716004f8e57f349cad87a7, type: 2}

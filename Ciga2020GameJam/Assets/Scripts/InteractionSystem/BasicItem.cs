@@ -10,29 +10,39 @@ using AudioType = UnityCore.AudioSystem.AudioType;
 
 public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
 {
+    [Header("重量")]
     [SerializeField] private int _mass;
+    public int PositionPointCount => positionPoints.Count;
+    [Header("放置相关")]
     [SerializeField] private Vector2 _positionInfo;
     [SerializeField] private List<GameObject> positionPoints;
     [SerializeField] private Vector3 _localPositon3D;
-    [SerializeField] private BoolReference _playerHoldingItem;
-    // [SerializeField] private ItemRequireAttribute _itemRequireAttribute;
+    [SerializeField] private float DegreeRotY = 0;
+    [SerializeField] private Vector2 DegreeRotXZ = Vector2.zero;
+    public Vector2 DegreeRotXz => DegreeRotXZ;
+    [Header("任务相关")]
     [SerializeField] private IntReference CompletedTaskAllNum;
     [SerializeField] private IntReference CompltedTaskNum;
-    [SerializeField] private float DegreeRotY = 0;
+    [SerializeField] private List<ItemType> _selfItemTypes = new List<ItemType>();
+    public List<ItemType> requireItemTypes = new List<ItemType>();
     
-    private List<ItemType> _selfItemTypes = new List<ItemType>();
+    private List<BasicItem> storedItems = new List<BasicItem>();
+    private bool initialized = false;
     private ItemUIHolder _itemUiHolder;
 
     public float DegreeRotY1 => DegreeRotY;
 
     private List<RoomBlock> attachedRoomBlocks = new List<RoomBlock>();
-    public List<ItemType> requireItemTypes = new List<ItemType>();
     public List<ItemType> ItemTypes => _selfItemTypes;
     private Collider _collider;
+    [Header("可变材质index")]
+    public int variableMatIndex = 0;
     private Material _material;
     private Rigidbody _rigidbody;
     private bool m_canBeInteracted = true;
     private bool m_positioned = false;
+
+    private Renderer outlineRenderer;
 
     #region Unity Functions
     
@@ -40,8 +50,26 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
     {
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
-        _material = GetComponent<Renderer>().material;
+        _material = GetComponent<Renderer>().materials[variableMatIndex];
         EventKit.Broadcast<int>("Add Mass", this.Mass);
+
+        if (!initialized)
+        {
+            this._itemUiHolder = UIController.Instance.GenerateUIHolder(this);
+            _itemUiHolder.InitializeUI(this);
+            _itemUiHolder.gameObject.SetActive(false);
+        
+            //change material color based on colorType
+            foreach (var type in _selfItemTypes)
+            {
+                if (type.HasColor)
+                {
+                    _material = GetComponent<Renderer>().materials[variableMatIndex];
+                    this._material.SetColor("_Tint", type.Color);
+                    return;
+                }
+            }
+        }
     }
 
     #endregion
@@ -64,20 +92,40 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
         }
     }
 
-    public void Initialize(List<ItemType> itemTypes, List<ItemType> requireTypes)
+    public void Initialize(List<ItemType> itemTypes, List<ItemType> requireTypes, Material outlineMaterial)
     {
+        initialized = true;
         _selfItemTypes = itemTypes.ToList();
         requireItemTypes = requireTypes.ToList();
         this._itemUiHolder = UIController.Instance.GenerateUIHolder(this);
         _itemUiHolder.InitializeUI(this);
         _itemUiHolder.gameObject.SetActive(false);
         
+        var parentMesh = this.GetComponent<MeshFilter>().mesh;
+        Debug.Log("Generate a new gameobject");
+        var outlineObj = new GameObject();
+        outlineObj.transform.SetParent(this.transform);
+        outlineObj.transform.localPosition = Vector3.zero;
+        outlineObj.transform.localScale = Vector3.one;
+        
+        var meshFilter = outlineObj.AddComponent<MeshFilter>();
+        meshFilter.mesh = parentMesh;
+        outlineRenderer = outlineObj.AddComponent<MeshRenderer>();
+        var length = this.GetComponent<MeshRenderer>().materials.Length;
+        outlineRenderer.materials = new Material[length];
+        var materials_copy = outlineRenderer.materials;
+        for (int i = 0; i < length; i++)
+        {
+            materials_copy[i] = outlineMaterial;
+        }
+        outlineRenderer.materials = materials_copy;
+        
         //change material color based on colorType
         foreach (var type in itemTypes)
         {
             if (type.HasColor)
             {
-                _material = GetComponent<Renderer>().material;
+                _material = GetComponent<Renderer>().materials[variableMatIndex];
                 this._material.SetColor("_Tint", type.Color);
                 return;
             }
@@ -105,6 +153,7 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
         {
             AudioController.Instance.RestartAudio(AudioType.ItemSFX_DropDown);
         }
+
         attachedRoomBlocks.Clear();
         this.m_positioned = false;
     }
@@ -123,6 +172,10 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
 
     public void FreezePosition(bool changeInteracted = true)
     {
+        if (!_rigidbody)
+        {
+            _rigidbody.GetComponent<Rigidbody>();
+        }
         if (changeInteracted)
         {
             this.m_canBeInteracted = false;   
@@ -132,6 +185,10 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
 
     public void ThawPosition()
     {
+        if (!_rigidbody)
+        {
+            this.GetComponent<Rigidbody>();
+        }
         this.m_canBeInteracted = true;
         _rigidbody.constraints = RigidbodyConstraints.None;
     }
@@ -153,20 +210,21 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
         //把满足条件的消去
         foreach (var puttingOnType in item.ItemTypes)
         {
+            
             for (int i = requireItemTypes.Count-1; i >= 0; i--)
             {
                 if (puttingOnType == requireItemTypes[i])
                 {
+                    storedItems.Add(item);
                     _itemUiHolder.UpdateUI(puttingOnType);
                     requireItemTypes.RemoveAt(i);
                     EventKit.Broadcast<int, Vector3>("Add Score", 50, this.transform.position);
                 }
-
+                
                 if (CheckIfSatisfied())
                 {
                     return;
                 }
-                
             }
         }
     }
@@ -242,6 +300,7 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
 
     public override void OnInteract()
     {
+        OnQuitInteract();
         base.OnInteract();
         //UI消失
         DoUiHint(false);
@@ -260,8 +319,9 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
 
     public override void OnWithInCheckRange()
     {
+        // Debug.Log("Try do within range");
         base.OnWithInCheckRange();
-        if (this.IsDecorator())
+        if (this.IsDecorator() && this.CanInteract)
         {
             OnSetBlockUI();
         }
@@ -269,8 +329,9 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
 
     public override void OnWithOutCheckRange()
     {
+        // Debug.Log("Try do without range");
         base.OnWithOutCheckRange();
-        if (this.IsDecorator())
+        if (this.IsDecorator() && this.CanInteract)
         {
             OnRemoveBlockUI();
         }
@@ -291,37 +352,60 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
         return false;
     }
 
+    public void DestroySelf()
+    {
+        if (storedItems != null && storedItems.Count>0)
+        {
+            foreach (var item in storedItems)
+            {
+                item.DestroySelf();
+            }   
+        }
+
+        if (this.gameObject != null)
+        {
+            if (this.gameObject.activeSelf)
+            {
+                if (ImpulseManager.Instance)
+                {
+                    ImpulseManager.Instance.GenerateImpulse(2);   
+                }
+                EventKit.Broadcast<int>("Add Mass", -this.Mass);
+                var obj = Instantiate(GameManager.Instance.ItemDestroyedParticle, this.transform.position,
+                    Quaternion.identity);
+                Timer.Register(5.0f, (() => Destroy(obj.gameObject)));
+                AudioController.Instance.RestartAudio(AudioType.ItemSFX_Destroy);
+            }
+            this.gameObject.SetActive(false);
+            Destroy(this.transform.gameObject);   
+        }
+    }
+
     private void OnDestroy()
     {
-        if (ImpulseManager.Instance)
-        {
-            ImpulseManager.Instance.GenerateImpulse(2);   
-        }
-        EventKit.Broadcast<int>("Add Mass", -this.Mass);
-        if (this.gameObject.activeSelf)
-        {
-            var obj = Instantiate(GameManager.Instance.ItemDestroyedParticle, this.transform.position,
-                Quaternion.identity);
-            Timer.Register(5.0f, (() => Destroy(obj.gameObject)));
-            AudioController.Instance.RestartAudio(AudioType.ItemSFX_Destroy);
-        }
+        this._selfItemTypes.Clear();
+        this.requireItemTypes.Clear();
     }
 
     private void Satisfied()
     {
         //Add Recovered Task
+        this.m_canBeInteracted = false;
         EventKit.Broadcast<int, Vector3>("Add Score", 100 + 50 * this.transform.childCount, this.transform.position);
         ImpulseManager.Instance.GenerateImpulse(2);
         AudioController.Instance.RestartAudio(AudioType.ItemSFX_Finish);
         CompletedTaskAllNum.Value++;
         CompltedTaskNum.Value++;
-        Timer.Register(2.0f, ()=>Destroy(this.transform.gameObject));
-        this.transform.DOScale(Vector3.zero, 1.0f).OnComplete((() =>
+        Timer.Register(1.0f, DestroySelf);
+        this.transform.DOScale(Vector3.zero, 0.6f).OnComplete((() =>
         {
             this.ClearBlock();
             var obj = Instantiate(GameManager.Instance.ItemCompleteParticle, this.transform.position,
                 Quaternion.identity);
-            Timer.Register(5.0f, (() => Destroy(obj.gameObject)));
+            Timer.Register(5.0f, (() =>
+            {
+                Destroy(obj.gameObject);
+            }));
         }));
     }
 
@@ -340,14 +424,31 @@ public class BasicItem : InteractableObject, IMass, IPositionable, IBlockInfo
     {
         if (yes)
         {
-            this._material.SetColor("_BaseColor", Color.blue);
-            this._material.SetFloat("_Outline", .6f);
-            this._material.SetColor("_OutlineColor", Color.yellow);
+            if (outlineRenderer!= null)
+            {
+                outlineRenderer.enabled = true;
+                foreach (var material in outlineRenderer.materials)
+                {
+                    material.SetFloat("_Outline", .1f);
+                    material.SetColor("_OutlineColor", Color.yellow);
+                }
+            }
+            else
+            {
+                _material.SetFloat("_Outline", .6f);
+                _material.SetColor("_OutlineColor", Color.yellow);
+            }
         }
         else
         {
-            this._material.SetColor("_BaseColor", Color.white);
-            this._material.SetFloat("_Outline", .0f);
+            if (outlineRenderer != null)
+            {
+                outlineRenderer.enabled = false;
+            }
+            else
+            {
+                _material.SetFloat("_Outline", .0f);
+            }
         }
     }
 

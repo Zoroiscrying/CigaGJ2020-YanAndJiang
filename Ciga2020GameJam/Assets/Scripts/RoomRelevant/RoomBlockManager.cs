@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityAtoms.BaseAtoms;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class RoomBlockManager : Singleton<RoomBlockManager>
 {
@@ -20,11 +22,6 @@ public class RoomBlockManager : Singleton<RoomBlockManager>
         _destroyedBlocks = new List<RoomBlock>();
         _blockDictionary = new Dictionary<Vector2, RoomBlock>();
         InitializeDictionary();
-    }
-    
-    void Update()
-    {
-        
     }
 
     #endregion

@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6994c19aa784dfe4d905118f39b6f2a2, type: 3}
   m_Name: ItemInfoBase_Table1X2
   m_EditorClassIdentifier: 
-  MassBase: 0
-  ItemPrefab: {fileID: 0}
+  MassBase: 2
+  ItemPrefab: {fileID: 2482678394248773059, guid: 7a4cb1b1139ec5c4bba1268a030bb015,
+    type: 3}
   RandomTypes: []
-  MustTypes: []
-  RandomRequireTypes: []
+  MustTypes:
+  - {fileID: 11400000, guid: a985cb6490483fd4b94d1df11eea2192, type: 2}
+  RandomRequireTypes:
+  - {fileID: 11400000, guid: 72149d27103fd034da8c72c1f5de74da, type: 2}
+  - {fileID: 11400000, guid: 837e0d456d14f5d42bd71d1a78a0c7ce, type: 2}

@@ -50,16 +50,14 @@ public class RoomBlock : InteractableObject,IPositionable
     public override void OnCanInteract()
     {
         base.OnCanInteract();
-        _material.SetColor("_BaseColor", Color.yellow);
-        _material.SetColor("_Tint", CanInteractCol);
+        // _material.SetColor("_Tint", CanInteractCol);
         EventKit.Broadcast<RoomBlock, bool>("Can Interact Room Block", this, true);
     }
 
     public override void OnQuitInteract()
     {
         base.OnQuitInteract();
-        _material.SetColor("_BaseColor", Color.white);
-        _material.SetColor("_Tint", Color.white);
+        _material.SetColor("_Tint", new Color(184/255f, 242/255f, 255/255f));
         EventKit.Broadcast<RoomBlock, bool>("Can Interact Room Block", this, false);
     }
 
@@ -69,19 +67,16 @@ public class RoomBlock : InteractableObject,IPositionable
         {
             if (hasItemUpon)
             {
-                _material.SetColor("_BaseColor", Color.cyan);
                 _material.SetColor("_Tint", Color.gray);
             }
             else
             {
-                _material.SetColor("_BaseColor", Color.red);
                 _material.SetColor("_Tint", CanInteractCol);
             }
         }
         else
         {
-            _material.SetColor("_BaseColor", Color.white);
-            _material.SetColor("_Tint", Color.white);
+            _material.SetColor("_Tint", new Color(184/255f, 242/255f, 255/255f));
         }
     }
 

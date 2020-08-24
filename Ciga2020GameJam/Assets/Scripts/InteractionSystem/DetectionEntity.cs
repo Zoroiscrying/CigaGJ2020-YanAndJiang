@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityAtoms.BaseAtoms;
 using UnityEngine;
 
 public class DetectionEntity : MonoBehaviour
@@ -10,13 +11,36 @@ public class DetectionEntity : MonoBehaviour
     private InteractableObject currentInteractable;
     [SerializeField] private ItemHolder _itemHolder;
     [SerializeField] private float detectionRange = 2.0f;
+    [SerializeField] private GameObject CheckDistancePosition;
+
+    private float holdKeyDetectTime = .3f;
+    private float holdKeyTimer = 0f;
+    private bool skipKeyUp = false;
 
     // Update is called once per frame
     void Update()
     {
-        if (currentInteractable && Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKey(KeyCode.E))
         {
+            holdKeyTimer += Time.deltaTime;
+            if (holdKeyTimer > holdKeyDetectTime)
+            {
+                EventKit.Broadcast("Drop Item");
+                skipKeyUp = true;
+                holdKeyTimer = 0.0f;
+            }
+        }
+
+        if (currentInteractable && Input.GetKeyUp(KeyCode.E) && !skipKeyUp)
+        {
+            holdKeyTimer = 0.0f;
             currentInteractable.OnInteract();
+        }
+        
+        if (Input.GetKeyUp(KeyCode.E))
+        {
+            holdKeyTimer = 0.0f;
+            skipKeyUp = false;
         }
         
         // Debug.Log("Remove current Interactable");
@@ -25,7 +49,7 @@ public class DetectionEntity : MonoBehaviour
             // Debug.Log("Remove current Interactable");
             if (interactables.Contains(currentInteractable))
             {
-                Debug.Log("Remove current Interactable");
+                // Debug.Log("Remove current Interactable");
                 currentInteractable.OnQuitInteract();
                 interactables.Remove(currentInteractable);
             }
@@ -73,13 +97,13 @@ public class DetectionEntity : MonoBehaviour
             if (currentInteractable)
             {
                 interactableDistance =
-                    Vector3.Distance(this.transform.position, currentInteractable.transform.position);   
+                    Vector3.Distance(CheckDistancePosition.transform.position, currentInteractable.transform.position);   
             }
             float minDis = interactableDistance;
             InteractableObject interactableObject = null;
             foreach (var interactable in interactables)
             {
-                var dis = Vector3.Distance(this.transform.position, interactable.transform.position);
+                var dis = Vector3.Distance(CheckDistancePosition.transform.position, interactable.transform.position);
                 if (dis < minDis)
                 {
                     minDis = dis;

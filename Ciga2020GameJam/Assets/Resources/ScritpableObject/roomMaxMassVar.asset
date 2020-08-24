@@ -20,5 +20,5 @@ MonoBehaviour:
   _triggerChangedOnOnEnable: 0
   _triggerChangedWithHistoryOnOnEnable: 0
   _oldValue: 20
-  _initialValue: 20
+  _initialValue: 15
   _preChangeTransformers: []

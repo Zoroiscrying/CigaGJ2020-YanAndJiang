@@ -57,10 +57,6 @@ namespace UnityCore.SceneManagement
                 //initialized the controller
                 Configure();
             }
-            else
-            {
-                Destroy(this.gameObject);
-            }  
         }
 
         private void OnDisable()
@@ -91,7 +87,7 @@ namespace UnityCore.SceneManagement
         }
         private async void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, LoadSceneMode mode)
         {
-            Debug.Log("Scene Loaded!");
+            // Debug.Log("Scene Loaded!");
             //the scene is loaded by Other Scripts rather than this Controller
             if (m_TargetScene == SceneType.None)
             {
@@ -120,11 +116,11 @@ namespace UnityCore.SceneManagement
                     throw;
                 }
             }
-            Debug.Log("Check Page Turn Off!");
             if (m_LoadingPage != null)
             {
                 //wait for one second for the loading page to come up and then close the page
-                await Task.Delay(1000);
+                await Task.Delay(1050);
+                Log("Turn loading page off now");
                 PageController.Instance.TurnPageOff(m_LoadingPage);
             }
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Rendering;
-using UnityEditorInternal;
-using UnityEngine;
-using UnityEngine.Rendering;
+﻿using UnityEngine;
 
 namespace UnityCore.Data
 {
@@ -15,7 +9,7 @@ namespace UnityCore.Data
         // 0 for low
         // 1 for medium
         // 2 for high
-        public int GraphicSettings
+        public int GraphicSettingsasd
         {
             get => PlayerPrefs.GetInt(graphicSettings);
             set

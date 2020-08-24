@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityCore.AudioSystem;
 using UnityEngine;
-using UnityEngine.iOS;
 
 namespace UnityCore.MenuSystem
 {
@@ -30,10 +29,6 @@ namespace UnityCore.MenuSystem
                     TurnPageOn(entryPage);
                 }
             }
-            else
-            {
-                Destroy(this.gameObject);
-            }   
         }
 
         #endregion

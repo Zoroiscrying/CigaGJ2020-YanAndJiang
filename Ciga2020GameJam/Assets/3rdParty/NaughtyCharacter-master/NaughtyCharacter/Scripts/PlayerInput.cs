@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 
 namespace NaughtyCharacter
 {
 	public class PlayerInput : MonoBehaviour
 	{
+		private Animator _animator;
+		
 		public float MoveAxisDeadZone = 0.2f;
 
 		public Vector2 MoveInput { get; private set; }
@@ -12,6 +15,11 @@ namespace NaughtyCharacter
 		public bool JumpInput { get; private set; }
 
 		public bool HasMoveInput { get; private set; }
+
+		private void Start()
+		{
+			_animator = this.GetComponentInChildren<Animator>();
+		}
 
 		public void UpdateInput()
 		{
@@ -40,6 +48,10 @@ namespace NaughtyCharacter
 			// Update other inputs
 			// CameraInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 			JumpInput = Input.GetButton("Jump");
+
+
+			this._animator.SetBool("walk", hasMoveInput);
+			this._animator.SetBool("in air", JumpInput);
 		}
 	}
 }

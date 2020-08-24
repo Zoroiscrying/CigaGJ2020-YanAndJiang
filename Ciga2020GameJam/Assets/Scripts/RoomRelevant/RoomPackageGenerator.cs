@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 public class RoomPackageGenerator : MonoBehaviour
 {
-    public GameObject PackagePrefab;
+    public GameObject[] PackagePrefabs;
     public BoolReference gamePaused;
     public List<int> PackageComingTime;
     public FloatReference GameSecondsThisRound;
@@ -18,6 +18,7 @@ public class RoomPackageGenerator : MonoBehaviour
     //120-180s
     //180-240s
     public IntReference GameHardRate;
+    
     public FloatReference NextPackageComeTime;
 
     [SerializeField] private GameObject GenerateCenter;
@@ -55,8 +56,9 @@ public class RoomPackageGenerator : MonoBehaviour
     
     private void GenerateOnePackage()
     {
-        AudioController.Instance.RestartAudio(UnityCore.AudioSystem.AudioType.PackageSFX_Generate);   
-        Instantiate(PackagePrefab, RandomPosInRegion(), Quaternion.identity);
+        AudioController.Instance.RestartAudio(UnityCore.AudioSystem.AudioType.PackageSFX_Generate);
+        var prefabIndex = Random.Range(0, PackagePrefabs.Length);
+        Instantiate(PackagePrefabs[prefabIndex], RandomPosInRegion(), Random.rotation);
     }
     
     // Start is called before the first frame update
@@ -70,6 +72,11 @@ public class RoomPackageGenerator : MonoBehaviour
     {
         if (!gamePaused)
         {
+            // if (Input.GetKeyDown(KeyCode.Space))
+            // {
+            //     GenerateOnePackage();
+            // }
+            
             if (NextPackageComeTime.Value <= 0)
             {
                 GenerateOnePackage();

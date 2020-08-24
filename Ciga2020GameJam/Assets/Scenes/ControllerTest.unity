@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -4098,12 +4098,6 @@ MonoBehaviour:
   positionPoints:
   - {fileID: 1361380040}
   _localPositon3D: {x: 0, y: 0.5, z: 0}
-  _playerHoldingItem:
-    _usage: 2
-    _value: 0
-    _constant: {fileID: 0}
-    _variable: {fileID: 11400000, guid: 98874004c4fbae14fa74d7e463e35c00, type: 2}
-    _variableInstancer: {fileID: 0}
   CompletedTaskAllNum:
     _usage: 0
     _value: 0
@@ -5807,10 +5801,40 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 64851530}
+    - target: {fileID: 9108800508051141403, guid: 3dd9aea7991b63940a9489422b9142bb,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9108800508051141403, guid: 3dd9aea7991b63940a9489422b9142bb,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9108800508051141403, guid: 3dd9aea7991b63940a9489422b9142bb,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9108800508466914816, guid: 3dd9aea7991b63940a9489422b9142bb,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9108800508950245618, guid: 3dd9aea7991b63940a9489422b9142bb,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 64851530}
+    - target: {fileID: 9108800509272303289, guid: 3dd9aea7991b63940a9489422b9142bb,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9108800509287580653, guid: 3dd9aea7991b63940a9489422b9142bb,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3dd9aea7991b63940a9489422b9142bb, type: 3}

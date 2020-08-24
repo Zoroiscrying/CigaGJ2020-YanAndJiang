@@ -11,22 +11,26 @@ public class ItemHolder : MonoBehaviour, IPositionable
 {
     [SerializeField] private GameObject itemHoldPosition;
     [SerializeField] private BoolReference playerHoldingItem;
+    private Animator _animator;
     private BasicItem _item;
     public BasicItem HoldingItem => _item;
 
     private void OnEnable()
     {
         EventKit.Subscribe<BasicItem, bool>("Item Interact", HandleItemInteract);
+        EventKit.Subscribe("Drop Item", DropItem);
     }
 
     private void OnDisable()
     {
         EventKit.Unsubscribe<BasicItem, bool>("Item Interact", HandleItemInteract);
+        EventKit.Unsubscribe("Drop Item", DropItem);
     }
 
     private void Start()
     {
         playerHoldingItem.Value = false;
+        _animator = this.GetComponentInChildren<Animator>();
     }
 
     private void HandleItemInteract(BasicItem item, bool item_positioned)
@@ -37,10 +41,10 @@ public class ItemHolder : MonoBehaviour, IPositionable
             //拿着物品，且对应某个被放置的物品交互 -- 检测是否能放上物品
             if (playerHoldingItem.Value == true)
             {
-                Debug.Log("Try Put Item");
+                // Debug.Log("Try Put Item");
                 if (item.CanPutItem(this._item))
                 {
-                    Debug.Log("Successfully Put Item");
+                    // Debug.Log("Successfully Put Item");
                     item.PutItemOn(this._item);
                     PutHandItemTo(item);
                 }
@@ -84,6 +88,9 @@ public class ItemHolder : MonoBehaviour, IPositionable
         {
             return;
         }
+        _animator.SetTrigger("pick up");
+        _animator.SetBool("pick", true);
+        
         ImpulseManager.Instance.GenerateImpulse(1);
         AudioController.Instance.RestartAudio(AudioType.ItemSFX_Compose);
         playerHoldingItem.Value = true;
@@ -91,6 +98,9 @@ public class ItemHolder : MonoBehaviour, IPositionable
         _item.ClearBlock();
         _item.FreezePosition();
         _item.ChangeCollider(true);
+
+        item.OnWithInCheckRange();
+        
         item.transform.position = this.CalculatePosition(item);
         item.transform.SetParent(this.transform, true);
     }
@@ -101,6 +111,10 @@ public class ItemHolder : MonoBehaviour, IPositionable
         {
             return;
         }
+        _animator.SetBool("pick", false);
+        
+        _item.OnWithOutCheckRange();
+        
         ImpulseManager.Instance.GenerateImpulse(1);
         AudioController.Instance.RestartAudio(AudioType.ItemSFX_DropDown);
         playerHoldingItem.Value = false;
@@ -110,12 +124,16 @@ public class ItemHolder : MonoBehaviour, IPositionable
         _item = null;
     }
 
+    //put item to somewhere and freeze it, and disable the ui and interaction
     public void PutHandItemTo(BasicItem putTo)
     {
         if (!HasItem)
         {
             return;
         }
+        
+        _animator.SetBool("pick", false);
+        
         ImpulseManager.Instance.GenerateImpulse(1);
         Vector3 rawDir = this.transform.position - putTo.transform.position;
         Vector2 XZdir = new Vector2(rawDir.x, rawDir.z).normalized;
@@ -144,21 +162,25 @@ public class ItemHolder : MonoBehaviour, IPositionable
             }
             // XZdir = new Vector2(0, Mathf.RoundToInt(XZdir.y));
         }
-        
+        Vector3 localScale = _item.transform.localScale;
         playerHoldingItem.Value = false;
-        _item.transform.position = putTo.CalculatePosition(putTo);
-        _item.transform.SetParent(putTo.transform, true);
-        _item.transform.localScale = Vector3.one;
+        _item.transform.SetParent(putTo.transform, false);
+        _item.transform.localScale = new Vector3(1 / putTo.transform.localScale.x * localScale.x,
+            1 / putTo.transform.localScale.y * localScale.y, 1 / putTo.transform.localScale.z * localScale.z);
+        _item.transform.position = putTo.CalculatePosition(_item);
         _item.ThawPosition();
+        // _item.transform.Rotate(this.transform.up, rotY + _item.DegreeRotY1);
         var rotation = _item.transform.eulerAngles;
-        rotation = new Vector3(0, rotY + _item.DegreeRotY1, 0);
+        rotation = new Vector3(_item.DegreeRotXz.x, rotY + _item.DegreeRotY1, _item.DegreeRotXz.y);
         _item.transform.eulerAngles = rotation;
         _item.FreezePosition();
+        _item.OnWithOutCheckRange();
         _item.ChangeCollider(false);
         _item = null;
         AudioController.Instance.RestartAudio(UnityCore.AudioSystem.AudioType.ItemSFX_Compose);
     }
 
+    //simply put item to somewhere and freeze it, no other things
     public void PutHandItemTo(Vector3 position)
     {
         if (!HasItem)
@@ -193,15 +215,13 @@ public class ItemHolder : MonoBehaviour, IPositionable
             }
             // XZdir = new Vector2(0, Mathf.RoundToInt(XZdir.y));
         }
-
-
         playerHoldingItem.Value = false;
         _item.OnSetBlockUI();
         _item.transform.position = position + _item.LocalPosition3D;
         _item.transform.SetParent(null, true);
         _item.ThawPosition();
         var rotation = _item.transform.eulerAngles;
-        rotation = new Vector3(0, rotY + _item.DegreeRotY1, 0);
+        rotation = new Vector3(_item.DegreeRotXz.x, rotY + _item.DegreeRotY1, _item.DegreeRotXz.y);
         _item.transform.eulerAngles = rotation;
         _item.ChangeCollider(false);
         _item.FreezePosition(false);

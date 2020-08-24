@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Cinemachine;
+﻿
 using UnityAtoms.BaseAtoms;
 using UnityCore.AudioSystem;
 using UnityCore.MenuSystem;
 using UnityCore.SceneManagement;
-using UnityEditor.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using AudioType = UnityCore.AudioSystem.AudioType;
@@ -20,6 +15,7 @@ public class GameManager : Singleton<GameManager>
 
     public IntReference GameScoreThisRound;
     public FloatReference GameSecondsThisRound;
+    public IntEvent GameHardRateChanged;
     public IntReference GameHardRate;
     public BoolReference GamePaused;
 
@@ -73,7 +69,10 @@ public class GameManager : Singleton<GameManager>
         //没玩过intro
         if (PlayerPrefs.GetInt("Intro") == 0)
         {
-            SceneController.Instance.Load(SceneType.Intro, loadingPage: LoadingPageType);
+            SceneController.Instance.Load(SceneType.Intro, loadingPage: LoadingPageType, sceneLoadDelegate:(type =>
+            {
+                UIController.Instance.TurnGamePage(true);
+            }));
             OnSwitchToSceneIntro();
         }
         else
@@ -88,9 +87,9 @@ public class GameManager : Singleton<GameManager>
         OnSwitchToSceneGame();
         SceneController.Instance.Load(SceneType.Game, (type =>
         {
-            StartGame();
             UIController.Instance.TurnMenuPage(false);
             UIController.Instance.TurnGamePage(true);
+            StartGame();
         }),loadingPage: LoadingPageType);
     }
 
@@ -108,37 +107,26 @@ public class GameManager : Singleton<GameManager>
     // Start is called before the first frame update
     void Start()
     {
-        PlayerPrefs.SetInt("Intro", 0);
-        
         OnSwitchToSceneMenu();
         DontDestroyOnLoad(this.gameObject);
         GamePaused.Value = true;
         GameScoreThisRound.Value = 0;
         GameSecondsThisRound.Value = 0f;
         GameHardRate.Value = 0;
-        // RestartRound();
     }
 
     public void RestartRound()
     {
-        GameSecondsThisRound.Value = 0f;
-        GameHardRate.Value = 0;
-        GameScoreThisRound.Value = 0;
-        GamePaused.Value = false;
-        SceneController.Instance.Load(SceneType.Game, reload: true, loadingPage: LoadingPageType);
-        // RoomBlockManager.Instance.RecoverAllBlocks();
-        // List<BasicPackage> packages = FindObjectsOfType<BasicPackage>().ToList();
-        // List<BasicItem> items = FindObjectsOfType<BasicItem>().ToList();
-        // foreach (var package in packages)
-        // {
-        //     package.DestroyAttachedItem();
-        //     package.DestroySelf();
-        // }
-        //
-        // foreach (var item in items)
-        // {
-        //     Destroy(item.gameObject);
-        // }
+        SceneController.Instance.Load(SceneType.Game, reload: true, loadingPage: LoadingPageType, sceneLoadDelegate:(
+            type =>
+            {
+                GameSecondsThisRound.Value = 0f;
+                GameHardRate.Value = 0;
+                GameScoreThisRound.Value = 0;
+                GamePaused.Value = false;
+                UIController.Instance.ResumeBtn.SetActive(true);
+                UIController.Instance.TurnPausePage(false);
+            }));
     }
 
     public void BackToMenu()
@@ -147,8 +135,13 @@ public class GameManager : Singleton<GameManager>
         GameHardRate.Value = 0;
         GameScoreThisRound.Value = 0;
         GamePaused.Value = true;
-        SceneController.Instance.Load(SceneType.Menu, loadingPage: LoadingPageType);
-        UIController.Instance.TurnMenuPage(true);
+        Debug.Log("Begin Loading Scene");
+        SceneController.Instance.Load(SceneType.Menu, loadingPage: LoadingPageType, sceneLoadDelegate:(type =>
+        {
+            Debug.Log("Scene successfully loaded.");
+            UIController.Instance.TurnMenuPage(true);
+            UIController.Instance.TurnGamePage(false);
+        }));
     }
 
     public void StartGame()
@@ -158,6 +151,7 @@ public class GameManager : Singleton<GameManager>
         GameScoreThisRound.Value = 0;
         GamePaused.Value = false;
         UIController.Instance.TurnMenuPage(false);
+        GameHardRateChanged.Raise();
     }
 
     public void PauseGame(bool gameEnd = false)

@@ -8,8 +8,8 @@ using AudioType = UnityEngine.AudioType;
 
 public class BasicPackage : InteractableObject, IMass
 {
+    public bool instantiated = false;
     private Material _material;
-    [SerializeField]
     private BasicItem storedItem;
     public override bool CanInteract { get => _canBeInteracted; }
     private bool _canBeInteracted = true;
@@ -22,6 +22,7 @@ public class BasicPackage : InteractableObject, IMass
         EventKit.Broadcast<int>("Add Mass", this._mass);
         GetItemFromManager();
         _material = this.GetComponent<Renderer>().material;
+        instantiated = true;
     }
 
     #endregion
@@ -57,7 +58,7 @@ public class BasicPackage : InteractableObject, IMass
     public override void OnQuitInteract()
     {
         base.OnQuitInteract();
-        //描边消失
+        //描边消失pacasd
         DoMaterialOutline(false);
         //UI消失
         DoUiHint(false);
@@ -65,7 +66,11 @@ public class BasicPackage : InteractableObject, IMass
 
     public void DestroyAttachedItem()
     {
-        Destroy(storedItem.gameObject);
+        if (storedItem)
+        {
+            Destroy(storedItem.gameObject);   
+        }
+        Debug.Log(storedItem.gameObject.name);
     }
     
     public void DestroySelf()
@@ -93,19 +98,26 @@ public class BasicPackage : InteractableObject, IMass
     private void GetItemFromManager()
     {
         this.storedItem = ItemGenerator.Instance.GenerateRandomItem();
+        if (storedItem == null)
+        {
+            Debug.LogWarning("What is going on?" + this.gameObject.name);
+        }
     }
 
     private void DoMaterialOutline(bool yes)
     {
-        if (yes)
+        if (_material)
         {
-            this._material.SetColor("_BaseColor", Color.blue);
-            this._material.SetFloat("_Outline", .6f);
-        }
-        else
-        {
-            this._material.SetColor("_BaseColor", Color.white);
-            this._material.SetFloat("_Outline", .0f);
+            if (yes)
+            {
+                this._material.SetColor("_BaseColor", Color.blue);
+                this._material.SetFloat("_Outline", .6f);
+            }
+            else
+            {
+                this._material.SetColor("_BaseColor", Color.white);
+                this._material.SetFloat("_Outline", .0f);
+            }   
         }
     }
 
@@ -120,8 +132,9 @@ public class BasicPackage : InteractableObject, IMass
         obj.transform.position = this.transform.position;
         obj.SetActive(true);
         Rigidbody objRigidbody = obj.GetComponent<Rigidbody>();
-        objRigidbody.AddForce(Vector3.up, ForceMode.Impulse);
-        BasicItem item = obj.GetComponent<BasicItem>();
+        objRigidbody.AddForce(Vector3.one * 2, ForceMode.Impulse);
+        // BasicItem item = obj.GetComponent<BasicItem>();
+        
         //item initialization or randomization
         
         //randomize visuals and mass and other things

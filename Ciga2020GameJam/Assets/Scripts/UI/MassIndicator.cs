@@ -19,14 +19,16 @@ public class MassIndicator : MonoBehaviour
         {
             if (ShouldAppear())
             {
-                this._rectTransform.DOMoveY(-420, 1.0f);
+                this._rectTransform.DOLocalMoveY(150, 1.0f);
+                TurnedOn = true;
             }
         }
         else
         {
             if (!ShouldAppear())
             {
-                this._rectTransform.DOMoveY(-540, 1.0f);
+                this._rectTransform.DOLocalMoveY(-150, 1.0f);
+                TurnedOn = false;
             }
         }
         _textMeshPro.text = "Room Mass " + CurrentMass.Value + "/" + MaxMass.Value;

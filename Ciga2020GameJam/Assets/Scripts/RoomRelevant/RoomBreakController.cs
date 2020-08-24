@@ -39,18 +39,19 @@ public class RoomBreakController : MonoBehaviour
     void Start()
     {
         CurrentRoomMass.Value = 0;
+        DestroyedBlockNum.Value = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        CheckRoomMass();
         CheckRecoverCount();
         if (DestroyedBlockNum.Value > MaxDestroyedBlockNum.Value && !GameManager.Instance.GamePaused)
         {
             RoomBlockManager.Instance.DestroyAllBlocks();
             GameManager.Instance.PauseGame(true);
         }
+        
     }
 
     public void AddRoomMass(int mass)
@@ -74,41 +75,47 @@ public class RoomBreakController : MonoBehaviour
             CompletedTask.Value = 0;
         }
     }
-
-    private void CheckRoomMass()
+    public void CheckRoomMass()
     {
         if (CurrentRoomMass > MaxRoomMass)
         {
             //Camera shaking
-            
-            //destroy some packages
-            FindAndDestroySomePackage(Random.Range(4, 6));
+            CinemachineImpulseSource.GenerateImpulse();
             //destroy some floors and relevant objects on it
             if (RoomBlockManager.Instance.DestroyOneBlock())
             {
                 CinemachineImpulseSource.GenerateImpulse();
-                AudioController.Instance.PlayAudio(UnityCore.AudioSystem.AudioType.SceneSFX_Boom);   
+                AudioController.Instance.RestartAudio(UnityCore.AudioSystem.AudioType.SceneSFX_Boom);   
                 DestroyedBlockNum.Value++;
             }
+            FindAndDestroySomePackage(Random.Range(4, 6));
         }
     }
 
-    private void FindAndDestroySomeItems(int num)
-    {
-        
-    }
     private void FindAndDestroySomePackage(int num)
     {
-        List<BasicPackage> packages = FindObjectsOfType<BasicPackage>().ToList();
-        List<BasicItem> items = FindObjectsOfType<BasicItem>().ToList();
+        List<BasicPackage> packages =
+            FindObjectsOfType<BasicPackage>().ToList().FindAll(package => package.instantiated == true);
+        List<BasicItem> items = FindObjectsOfType<BasicItem>().ToList()
+            .FindAll((item => item.gameObject.activeSelf == true));
+        
         for (int i = 0; i < num; i++)
         {
+            if (packages.Count == 0 && items.Count == 0)
+            {
+                break;
+            }
+            //no package found, destroy some items
             if (packages.Count <= 0)
             {
+                Debug.Log("No package found, destroy one item.");
                 int randomIndex = Random.Range(0, items.Count);
                 var item = items[randomIndex];
-                Destroy(item.gameObject);
                 items.RemoveAt(randomIndex);
+                if (item != null)
+                {
+                    item.DestroySelf();
+                }
             }
             else
             {
